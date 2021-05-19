@@ -24,6 +24,7 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.lang.Nullable;
 
 /**
+ * 为程序提供配置的中心接口,当程序运行起来,该对象只读,但是可能其他实现会支持重新载入
  * Central interface to provide configuration for an application.
  * This is read-only while the application is running, but may be
  * reloaded if the implementation supports this.

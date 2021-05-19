@@ -21,12 +21,21 @@ import org.springframework.core.ResolvableType;
 import org.springframework.lang.Nullable;
 
 /**
+ * 访问spring bean的根接口
  * The root interface for accessing a Spring bean container.
- *
+ * 这是最底层(最基本,基础)能获取到bean容器的客户端
  * <p>This is the basic client view of a bean container;
+ * 上层的接口如ListableBeanFactory ConfigurableBeanFactory是为特殊目的设计的
  * further interfaces such as {@link ListableBeanFactory} and
  * {@link org.springframework.beans.factory.config.ConfigurableBeanFactory}
  * are available for specific purposes.
+ *
+ * 此接口被保有一定数量的bean定义的对象的类所实现
+ * 每个对象(类)都将会拥有一个独特的名称.根据bean的定义
+ * 工厂(BeanFactory)将会返回一个容器所包含的独特的实例(原型模式)
+ * 或者一个共享的实例(单例模式--该模式是默认模式,spring认为这是一个更好的选择)
+ * 将返回那种类型的实例取决于bean factory的配置:Api是相同的,
+ * 自从spring2.0开始,进一步的scope(bean模式)可以被使用了,比如在web环境下的 request session
  *
  * <p>This interface is implemented by objects that hold a number of bean definitions,
  * each uniquely identified by a String name. Depending on the bean definition,
@@ -38,17 +47,28 @@ import org.springframework.lang.Nullable;
  * 2.0, further scopes are available depending on the concrete application
  * context (e.g. "request" and "session" scopes in a web environment).
  *
+ * 这种方式的要点是BeanFactory是程序组件的注册中心
+ * 程序组件的集中的配置是(例如单个对象不再需要读取配置文件)
+ * 第四章和第十一章会讨论这种方式的好处
  * <p>The point of this approach is that the BeanFactory is a central registry
  * of application components, and centralizes configuration of application
  * components (no more do individual objects need to read properties files,
  * for example). See chapters 4 and 11 of "Expert One-on-One J2EE Design and
  * Development" for a discussion of the benefits of this approach.
  *
+ *请注意，依靠 '依赖注入' 通常（“push”配置）比通过setters配置应用程序对象
+ * 或者构造函数更好,依赖注入功能更会被BeanFactory接口及其子接口实现，而不是通过BeanFactory查找
  * <p>Note that it is generally better to rely on Dependency Injection
  * ("push" configuration) to configure application objects through setters
  * or constructors, rather than use any form of "pull" configuration like a
  * BeanFactory lookup. Spring's Dependency Injection functionality is
  * implemented using this BeanFactory interface and its subinterfaces.
+ *
+ * 通常一个BenaFactory将会加载存储在配置中的bean的定义
+ * 比如xml,或者使用包去配置beans(扫描注解方式)
+ * 但是每一种实现都应该简单直接的返回其所需要创建的对象,
+ * 对于如何存储bean的定义没有约束,
+ * spring官方鼓励在bean中使用依赖注入
  *
  * <p>Normally a BeanFactory will load bean definitions stored in a configuration
  * source (such as an XML document), and use the {@code org.springframework.beans}
@@ -58,12 +78,16 @@ import org.springframework.lang.Nullable;
  * properties file, etc. Implementations are encouraged to support references
  * amongst beans (Dependency Injection).
  *
+ * 与ListableBeanFactory中的所有方法相比,HierarchicalBeanFactory的所有操作都将检查父级工厂(如果有的话)
+ * 如果bea在当前工厂实例中没有找到,将会立马去父级工厂中去查询,该工厂实例都支持对相同名称的bean进行覆盖
  * <p>In contrast to the methods in {@link ListableBeanFactory}, all of the
  * operations in this interface will also check parent factories if this is a
  * {@link HierarchicalBeanFactory}. If a bean is not found in this factory instance,
  * the immediate parent factory will be asked. Beans in this factory instance
  * are supposed to override beans of the same name in any parent factory.
  *
+ * BeanFactory的实现都应该尽量支持标准bean的生存周期
+ * 所有的初始化方法和其标准顺序如下:
  * <p>Bean factory implementations should support the standard bean lifecycle interfaces
  * as far as possible. The full set of initialization methods and their standard order is:
  * <ol>
@@ -88,6 +112,7 @@ import org.springframework.lang.Nullable;
  * <li>{@code postProcessAfterInitialization} methods of BeanPostProcessors
  * </ol>
  *
+ * 关闭bean工厂,以下生存周期方法将执行:
  * <p>On shutdown of a bean factory, the following lifecycle methods apply:
  * <ol>
  * <li>{@code postProcessBeforeDestruction} methods of DestructionAwareBeanPostProcessors
@@ -121,6 +146,7 @@ public interface BeanFactory {
 	 * beans <i>created</i> by the FactoryBean. For example, if the bean named
 	 * {@code myJndiObject} is a FactoryBean, getting {@code &myJndiObject}
 	 * will return the factory, not the instance returned by the factory.
+	 * 用于区分普通bean和FactoryBean,工厂本身也会由BeanFactory,当使用&作为前缀从工厂中检索bean时候,将会返回工厂本身
 	 */
 	String FACTORY_BEAN_PREFIX = "&";
 
