@@ -20,13 +20,19 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.ResourceUtils;
 
 /**
+ * 读取资源的策略接口
+ * 一个ApplicationContext需要提供一个功能健全的ResourcePatternResolver实现
  * Strategy interface for loading resources (e.g., class path or file system
  * resources). An {@link org.springframework.context.ApplicationContext}
  * is required to provide this functionality plus extended
  * {@link org.springframework.core.io.support.ResourcePatternResolver} support.
  *
+ * DefaultResourceLoader是一个单独的实现,用于独立于ApplicationContext使用,也被用于ResourceEditor
  * <p>{@link DefaultResourceLoader} is a standalone implementation that is
  * usable outside an ApplicationContext and is also used by {@link ResourceEditor}.
+ *
+ *  在ApplicationContext运行时,Resource和 Resource[]类型的bean属性可以直接从字符串中获取,
+ *  并使用特定的context的加载策略
  *
  * <p>Bean properties of type {@code Resource} and {@code Resource[]} can be populated
  * from Strings when running in an ApplicationContext, using the particular

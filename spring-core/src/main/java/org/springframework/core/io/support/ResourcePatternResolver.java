@@ -22,9 +22,11 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
 /**
+ * 将location pattern字符串解析成resource object(资源对象)的策略接口
  * Strategy interface for resolving a location pattern (for example,
  * an Ant-style path pattern) into {@link Resource} objects.
- *
+ * 这是ResourceLoader的扩展接口
+ * 一个传入的ResourceLoader可以被检验是否实现自此扩展接口
  * <p>This is an extension to the {@link org.springframework.core.io.ResourceLoader}
  * interface. A passed-in {@code ResourceLoader} (for example, an
  * {@link org.springframework.context.ApplicationContext} passed in via

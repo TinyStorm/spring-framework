@@ -80,17 +80,22 @@ public abstract class AbstractXmlApplicationContext extends AbstractRefreshableC
 	@Override
 	protected void loadBeanDefinitions(DefaultListableBeanFactory beanFactory) throws BeansException, IOException {
 		// Create a new XmlBeanDefinitionReader for the given BeanFactory.
+		//会将该beanDefinitionReader注册到beanFactory中,DefaultListableBeanFactory实现了注册支持接口
 		XmlBeanDefinitionReader beanDefinitionReader = new XmlBeanDefinitionReader(beanFactory);
 
 		// Configure the bean definition reader with this context's
 		// resource loading environment.
 		beanDefinitionReader.setEnvironment(this.getEnvironment());
 		beanDefinitionReader.setResourceLoader(this);
+		//为bean定义 读取器设置 SAX xml解析器
 		beanDefinitionReader.setEntityResolver(new ResourceEntityResolver(this));
 
 		// Allow a subclass to provide custom initialization of the reader,
 		// then proceed with actually loading the bean definitions.
+		//允许子类提供定制的reader初始化,然后真正的进行bean definitions的载入
+		//当前的功能是开启xml校验
 		initBeanDefinitionReader(beanDefinitionReader);
+		//开始载入bean
 		loadBeanDefinitions(beanDefinitionReader);
 	}
 
@@ -107,6 +112,9 @@ public abstract class AbstractXmlApplicationContext extends AbstractRefreshableC
 	}
 
 	/**
+	 * 载入给定xmlReader中含有的bean definitions
+	 * bean factory的生命周期由 refreshBeanFactory方法决定
+	 * 因此当前方法值支持bean definitions的载入和注册
 	 * Load the bean definitions with the given XmlBeanDefinitionReader.
 	 * <p>The lifecycle of the bean factory is handled by the {@link #refreshBeanFactory}
 	 * method; hence this method is just supposed to load and/or register bean definitions.
@@ -132,6 +140,8 @@ public abstract class AbstractXmlApplicationContext extends AbstractRefreshableC
 	/**
 	 * Return an array of Resource objects, referring to the XML bean definition
 	 * files that this context should be built with.
+	 * 默认的实现返回空
+	 * 如果子类向提供预先构建好的resource对象,而不是提供一个资源位置的字符串,则可以重写该方法
 	 * <p>The default implementation returns {@code null}. Subclasses can override
 	 * this to provide pre-built Resource objects rather than location Strings.
 	 * @return an array of Resource objects, or {@code null} if none
