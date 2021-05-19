@@ -211,6 +211,8 @@ public abstract class AbstractBeanDefinitionReader implements BeanDefinitionRead
 	 * @see #loadBeanDefinitions(org.springframework.core.io.Resource[])
 	 */
 	public int loadBeanDefinitions(String location, @Nullable Set<Resource> actualResources) throws BeanDefinitionStoreException {
+		//获取初始化时候设置的ResourceLoader,在AbstractXmlApplicationContext中构建的BeanDefinitionReader的时候是设置的this,即
+		//是ResourcePatternResolver的实现
 		ResourceLoader resourceLoader = getResourceLoader();
 		if (resourceLoader == null) {
 			throw new BeanDefinitionStoreException(

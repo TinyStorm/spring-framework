@@ -22,9 +22,11 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
 /**
+ * 策略,用于读取多个资源文件(比如含有通配符的路径下的)
  * Strategy interface for resolving a location pattern (for example,
  * an Ant-style path pattern) into {@link Resource} objects.
  *
+ * 是 ResourceLoader的扩展接口
  * <p>This is an extension to the {@link org.springframework.core.io.ResourceLoader}
  * interface. A passed-in {@code ResourceLoader} (for example, an
  * {@link org.springframework.context.ApplicationContext} passed in via
